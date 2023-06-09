@@ -1,12 +1,14 @@
-import 'package:app_client/src/views/app/home/component/products/product.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../../model/product.dart';
 import '../../../../constants.dart';
+import 'product_item.dart';
 
 class Products extends StatelessWidget {
-  const Products({super.key, required this.title});
+  const Products({super.key, required this.title, required this.products});
   final String title;
+  final List<Product> products;
 
   @override
   Widget build(BuildContext context) {
@@ -20,15 +22,11 @@ class Products extends StatelessWidget {
           _buildTitle(size),
           const SizedBox(height: 10),
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              for (var i = 0; i < 20; i++)
-                Product(
-                  addToCart: () {},
-                )
-            ],
-          )
+              spacing: 10,
+              runSpacing: 10,
+              children: products
+                  .map((product) => ProductItem(product: product))
+                  .toList())
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:skeletons/skeletons.dart';
+// import 'package:skeletons/skeletons.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -63,15 +63,15 @@ class _AppCarouselState extends State<AppCarousel> {
                 child: CachedNetworkImage(
                   imageUrl: imgList[index],
                   fit: BoxFit.cover,
-                  placeholder: (BuildContext context, String url) =>
-                      SkeletonParagraph(
-                    style: SkeletonParagraphStyle(
-                        lineStyle: SkeletonLineStyle(
-                      height: size.width * 0.5,
-                      borderRadius: BorderRadius.circular(7),
-                      minLength: MediaQuery.of(context).size.width / 2,
-                    )),
-                  ),
+                  // placeholder: (BuildContext context, String url) =>
+                  //     SkeletonParagraph(
+                  //   style: SkeletonParagraphStyle(
+                  //       lineStyle: SkeletonLineStyle(
+                  //     height: size.width * 0.5,
+                  //     borderRadius: BorderRadius.circular(7),
+                  //     minLength: MediaQuery.of(context).size.width / 2,
+                  //   )),
+                  // ),
                   errorWidget: (context, url, error) => const Icon(
                     Icons.error,
                     color: kErrorColor,

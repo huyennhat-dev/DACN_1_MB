@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
 import 'bottom_tab_bloc.dart';
 import 'component/cart_drawer.dart';
 import 'component/menu_drawer.dart';
@@ -36,6 +35,8 @@ class _HomeLayoutState extends State<HomeLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -44,7 +45,10 @@ class _HomeLayoutState extends State<HomeLayout> {
           backgroundColor: Colors.white,
           actions: [Container()]),
       drawer: const MenuDrawer(),
-      endDrawer: CartDrawer(),
+      endDrawer: Drawer(
+          width: size.width * 0.85,
+          backgroundColor: Colors.white,
+          child: const CartWidget()),
       backgroundColor: Colors.white,
       body: StreamBuilder<int>(
         stream: _bloc.currentIndexStream,
