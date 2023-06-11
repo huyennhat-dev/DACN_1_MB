@@ -49,4 +49,25 @@ class CartRepo {
       throw Exception(e);
     }
   }
+
+  static vnpayMethod(data) async {
+    final String url = '${Configs.baseUrl}/home/order/create-url';
+    try {
+      return await Dio().post(url,
+          data: data,
+          options: Options(headers: {"x-auth-token": await token()}));
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  static getOrderData() async {
+    final String url = '${Configs.baseUrl}/home/order/user-order';
+    try {
+      return await Dio()
+          .get(url, options: Options(headers: {"x-auth-token": await token()}));
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

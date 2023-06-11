@@ -51,11 +51,15 @@ dependencies:
   lottie: ^2.3.2
   dio:
   loading_animation_widget: ^1.2.0+4
-  top_snackbar_flutter: ^3.0.0+1
   dart_jsonwebtoken: ^2.8.0
   fluttertoast: ^8.0.8
-
-
+  confirm_dialog: ^1.0.1
+  url_launcher: ^6.1.11
+  webview_flutter: ^2.0.4
+  another_flushbar: ^1.12.30
+  scroll_to_index: ^3.0.1
+  
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -17,15 +17,11 @@ class AppHeader extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Container(
-      height: 70,
+      height: 55,
       width: size.width,
       padding: const EdgeInsets.symmetric(horizontal: kDefautPadding / 2),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: const BorderRadius.only(
-          bottomRight: Radius.circular(10),
-          bottomLeft: Radius.circular(10),
-        ),
         boxShadow: [Shadown.shadown],
       ),
       child: Row(
@@ -98,35 +94,37 @@ class AppHeader extends StatelessWidget {
         ),
       );
 
-  Container _searchForm(BuildContext context, Size size) => Container(
-        height: 40,
-        width: size.width - 175,
-        padding: const EdgeInsets.only(left: kDefautPadding / 2),
-        margin: const EdgeInsets.symmetric(horizontal: kDefautPadding / 2),
-        decoration: BoxDecoration(
-            border: Border.all(color: kBorderColor, width: 1),
-            borderRadius: BorderRadius.circular(5)),
-        child: TextFormField(
-          cursorColor: textColor,
-          style: GoogleFonts.openSans(
-              color: textColor, fontSize: 16, fontWeight: FontWeight.w400),
-          maxLines: 1,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            suffixIcon: GestureDetector(
-                onTap: () => Navigator.pushNamed(context, '/search'),
-                child: const Icon(CupertinoIcons.search,
-                    color: textColor, size: 20)),
-            border: InputBorder.none,
-            hintStyle: GoogleFonts.openSans(
-                color: textColor.withOpacity(0.5),
-                fontSize: 16,
-                fontWeight: FontWeight.w400),
-            hintText: "Bạn muốn tìm gì?",
-            contentPadding:
-                const EdgeInsets.symmetric(vertical: 11, horizontal: 0),
+  Widget _searchForm(BuildContext context, Size size) => Expanded(
+        flex: 1,
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.only(left: kDefautPadding / 2),
+          margin: const EdgeInsets.symmetric(horizontal: kDefautPadding / 2),
+          decoration: BoxDecoration(
+              border: Border.all(color: kBorderColor, width: 1),
+              borderRadius: BorderRadius.circular(5)),
+          child: TextFormField(
+            cursorColor: textColor,
+            style: GoogleFonts.openSans(
+                color: textColor, fontSize: 16, fontWeight: FontWeight.w400),
+            maxLines: 1,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              suffixIcon: GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/search'),
+                  child: const Icon(CupertinoIcons.search,
+                      color: textColor, size: 20)),
+              border: InputBorder.none,
+              hintStyle: GoogleFonts.openSans(
+                  color: textColor.withOpacity(0.5),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400),
+              hintText: "Bạn muốn tìm gì?",
+              contentPadding:
+                  const EdgeInsets.symmetric(vertical: 11, horizontal: 0),
+            ),
+            onChanged: (value) {},
           ),
-          onChanged: (value) {},
         ),
       );
 

@@ -1,11 +1,10 @@
-import 'package:app_client/src/util/behavior.dart';
 import 'package:app_client/src/util/button.dart';
 import 'package:app_client/src/views/app/bloc/cart_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 // import 'package:skeletons/skeletons.dart';
 
 import '../../constants.dart';
@@ -31,8 +30,14 @@ class _CartWidgetState extends State<CartWidget> {
       child: Column(
         children: [
           _buildHeader(size, context),
-          Expanded(flex: 1, child: CartBody(cartBloc: cartBloc)),
-          _buildBottom(size)
+          Expanded(
+              flex: 1,
+              child: cartBloc.state.carts.isNotEmpty
+                  ? CartBody(cartBloc: cartBloc)
+                  : Container(
+                      child: Lottie.asset('assets/json/empty.json'),
+                    )),
+          cartBloc.state.carts.isNotEmpty ? _buildBottom(size) : Container()
         ],
       ),
     );

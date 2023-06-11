@@ -1,7 +1,6 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../views/constants.dart';
 
@@ -12,33 +11,61 @@ class FlushBar {
     switch (type) {
       case "success":
         icon = Icons.check_circle_outline;
-        iconColor = Colors.green;
+        iconColor = const Color(0xFF00FF08);
         break;
       case "warning":
         icon = Icons.warning_amber_rounded;
-        iconColor = Colors.amberAccent;
+        iconColor = const Color(0xFFFFC800);
         break;
       case "error":
         icon = Icons.error_outline;
-        iconColor = Colors.redAccent;
+        iconColor = const Color(0xFFFF0000);
         break;
       default:
     }
-    showTopSnackBar(
-      Overlay.of(context)!,
-      CustomSnackBar.success(
-        backgroundColor: Colors.white.withOpacity(0.5),
-        iconPositionLeft: 20,
-        icon: Icon(icon, color: iconColor, size: 40),
-        iconRotationAngle: 0,
-        message: text,
-        messagePadding: const EdgeInsets.only(left: 20),
-        textAlign: TextAlign.left,
-        textStyle: GoogleFonts.openSans(
-            fontSize: 18, fontWeight: FontWeight.w400, color: textColor),
+    Flushbar(
+      title: "Mê Truyện Chữ!",
+      message: text,
+      messageText: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Text(
+          text,
+          style: GoogleFonts.openSans(
+              fontSize: 15, fontWeight: FontWeight.w400, color: textColor),
+        ),
       ),
-      padding: const EdgeInsets.all(kDefautPadding / 2),
-      animationDuration: const Duration(milliseconds: 1500),
-    );
+      titleText: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Text(
+          "Mê Truyện Chữ!",
+          style: GoogleFonts.openSans(
+              fontSize: 17, fontWeight: FontWeight.w500, color: textColor),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+      icon: Icon(icon, size: 48.0, color: iconColor),
+      flushbarPosition: FlushbarPosition.TOP,
+      duration: const Duration(milliseconds: 2000),
+      borderRadius: BorderRadius.circular(10),
+      animationDuration: const Duration(milliseconds: 700),
+      backgroundColor: Colors.white,
+      boxShadows: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: const Offset(0, 0), // vertical offset
+        ),
+      ],
+      // backgroundGradient: LinearGradient(
+      //   begin: Alignment.topCenter,
+      //   end: Alignment.bottomCenter,
+      //   colors: [
+      //     Colors.blue.withOpacity(0.8),
+      //     Colors.purple.withOpacity(0.8),
+      //   ],
+      // ),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    ).show(context);
   }
 }

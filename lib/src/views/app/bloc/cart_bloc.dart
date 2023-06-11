@@ -1,5 +1,6 @@
 import 'package:app_client/src/repo/cart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../helper/toast.dart';
 import '../../../model/cart.dart';
@@ -57,7 +58,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     if (existingCartIndex != -1) {
       carts.removeAt(existingCartIndex);
       await CartRepo.delCart(product.sId);
-      ToastMsg.toast("Xoá thành công");
+      ToastMsg.toast("Xoá thành công", ToastGravity.BOTTOM);
     }
 
     emit(CartState(carts: carts, totalPrice: _totalPrice(carts)));
@@ -78,7 +79,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       carts.add(Cart(product: product, quantity: quantity));
     }
 
-    ToastMsg.toast("Thêm thành công");
+    ToastMsg.toast("Thêm thành công", ToastGravity.BOTTOM);
     emit(CartState(carts: carts, totalPrice: _totalPrice(carts)));
   }
 
@@ -91,15 +92,16 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       final updatedQuantity = existingCart.quantity! + number;
       if (updatedQuantity <= 0) {
         carts.removeAt(existingCartIndex);
+        emit(CartState(carts: carts, totalPrice: _totalPrice(carts)));
+        ToastMsg.toast("Xoá thành công", ToastGravity.BOTTOM);
         await CartRepo.delCart(product.sId);
-        ToastMsg.toast("Xoá thành công");
       } else {
         carts[existingCartIndex] =
             existingCart.copyWith(quantity: updatedQuantity);
+        emit(CartState(carts: carts, totalPrice: _totalPrice(carts)));
+
         await CartRepo.updateQuantity(product.sId, updatedQuantity);
       }
-
-      emit(CartState(carts: carts, totalPrice: _totalPrice(carts)));
     }
   }
 
