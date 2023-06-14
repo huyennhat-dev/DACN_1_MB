@@ -14,7 +14,8 @@ class CustomButton extends StatelessWidget {
       this.radius = 5.0,
       this.iconSize = 20,
       this.padding,
-      this.color = kPrimaryColor});
+      this.color = kPrimaryColor,
+      this.textSize = 16});
 
   final VoidCallback onPressed;
   final double? height;
@@ -23,6 +24,7 @@ class CustomButton extends StatelessWidget {
   final String? text;
   final IconData? icon;
   final double? iconSize;
+  final double? textSize;
   final double? padding;
   final Color? color;
 
@@ -63,7 +65,7 @@ class CustomButton extends StatelessWidget {
                     text!,
                     style: GoogleFonts.openSans(
                         color: color,
-                        fontSize: 14,
+                        fontSize: textSize,
                         fontWeight: FontWeight.w500),
                   ),
                 )

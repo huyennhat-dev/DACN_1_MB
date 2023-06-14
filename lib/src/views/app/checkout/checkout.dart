@@ -3,6 +3,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:app_client/src/model/cart.dart';
 import 'package:app_client/src/repo/cart.dart';
+import 'package:app_client/src/views/app/bloc/user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,9 +40,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   Future<void> checkOut(BuildContext context) async {
     final cartBloc = BlocProvider.of<CartBloc>(context);
+    final userBloc = BlocProvider.of<UserBloc>(context);
     if (cartBloc.state.carts.isEmpty) {
       return FlushBar()
           .showFlushBar(context, "warning", "Chưa có mặt hàng nào!");
+    }
+    if (userBloc.state.user.address == "") {
+      return FlushBar()
+          .showFlushBar(context, "warning", "Địa chỉ nhận hàng đang trống!");
+    }
+    if (userBloc.state.user.phone == "") {
+      return FlushBar().showFlushBar(
+          context, "warning", "Số điện thoại nhận hàng đang trống!");
     }
     switch (selectPaymentBloc.key) {
       case "":
@@ -145,13 +155,33 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           ),
                           child: cartBloc.state.carts.isNotEmpty
                               ? Column(
-                                  children: state.carts
-                                      .map((e) => CartItem(
-                                            cartBloc: cartBloc,
-                                            data: e,
-                                            width: size.width - kDefautPadding,
-                                          ))
-                                      .toList(),
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(Icons.list_alt_outlined,
+                                            color: kPrimaryColor, size: 24),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          "Danh sách đơn hàng",
+                                          style: GoogleFonts.openSans(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: state.carts
+                                          .map((e) => CartItem(
+                                                cartBloc: cartBloc,
+                                                data: e,
+                                                width:
+                                                    size.width - kDefautPadding,
+                                              ))
+                                          .toList(),
+                                    ),
+                                  ],
                                 )
                               : Container(
                                   height:
@@ -161,6 +191,92 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                       child: Lottie.asset(
                                           'assets/json/empty.json')),
                                 ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.only(
+                    top: 10, left: 10, bottom: 0, right: 10),
+                sliver: SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.all(kDefautPadding / 2),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(kDefautPadding / 2),
+                      color: Colors.white,
+                    ),
+                    child: BlocBuilder<UserBloc, UserState>(
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on_outlined,
+                                    color: kPrimaryColor, size: 24),
+                                const SizedBox(width: 5),
+                                Text(
+                                  "Địa chỉ nhận hàng",
+                                  style: GoogleFonts.openSans(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            state.user.address == "" || state.user.phone == ""
+                                ? GestureDetector(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, '/edit-profile'),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            if (state.user.address == "")
+                                              _buildAddressText(size,
+                                                  "Địa chỉ nhận hàng chưa được cập nhật"),
+                                            if (state.user.phone == "")
+                                              _buildAddressText(size,
+                                                  "Số điện thoại nhận hàng chưa được cập nhật"),
+                                            _buildAddressText(size,
+                                                "Nhất vào biểu tượng bên phải để cập nhật"),
+                                          ],
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 18,
+                                          color: Colors.black54,
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : Row(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          _buildAddressText(
+                                              size, state.user.name ?? ""),
+                                          _buildAddressText(
+                                              size, state.user.phone ?? ""),
+                                          _buildAddressText(
+                                              size, state.user.address ?? "")
+                                        ],
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => Navigator.pushNamed(
+                                            context, '/edit-profile'),
+                                        child: const Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 18,
+                                          color: Colors.black54,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                          ],
                         );
                       },
                     ),
@@ -182,10 +298,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Phương thức thanh toán",
-                                style: GoogleFonts.openSans(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              Row(
+                                children: [
+                                  const Icon(Icons.payment_outlined,
+                                      color: kPrimaryColor, size: 24),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    "Phương thức thanh toán",
+                                    style: GoogleFonts.openSans(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 5),
                               StreamBuilder<String>(
@@ -241,17 +365,25 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               const SizedBox(height: 5),
                               BlocBuilder<CartBloc, CartState>(
                                 builder: (context, state) {
-                                  return Column(
-                                    children: [
-                                      _buildCheckOutText(size,
-                                          "Tổng tiền hàng :", state.totalPrice),
-                                      const SizedBox(height: 5),
-                                      _buildCheckOutText(
-                                          size, "Phí vận chuyển :", 0),
-                                      const SizedBox(height: 5),
-                                      _buildCheckOutText(size,
-                                          "Tổng tiền hàng :", state.totalPrice),
-                                    ],
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Column(
+                                      children: [
+                                        _buildCheckOutText(
+                                            size,
+                                            "Tổng tiền hàng :",
+                                            state.totalPrice),
+                                        const SizedBox(height: 5),
+                                        _buildCheckOutText(
+                                            size, "Phí vận chuyển :", 0),
+                                        const SizedBox(height: 5),
+                                        _buildCheckOutText(
+                                            size,
+                                            "Tổng tiền hàng :",
+                                            state.totalPrice),
+                                      ],
+                                    ),
                                   );
                                 },
                               ),
@@ -274,7 +406,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         ),
                       ),
                     )
-                  : const SliverToBoxAdapter()
+                  : const SliverToBoxAdapter(),
             ],
           ),
         ),
@@ -282,12 +414,25 @@ class _CheckOutPageState extends State<CheckOutPage> {
     );
   }
 
+  Widget _buildAddressText(Size size, String text) => Container(
+      width: size.width - 3 * kDefautPadding - 5,
+      padding: const EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.only(bottom: 3),
+      child: Text(
+        text,
+        style: GoogleFonts.openSans(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: textColor.withOpacity(0.8),
+        ),
+      ));
+
   Widget _buildCheckOutText(Size size, String text, double price) => SizedBox(
-        width: size.width - 2 * kDefautPadding,
+        width: size.width - 3 * kDefautPadding,
         child: Row(
           children: [
             SizedBox(
-              width: (size.width - 2 * kDefautPadding) / 2,
+              width: (size.width - 3 * kDefautPadding) / 2,
               child: Text(
                 text,
                 style: GoogleFonts.openSans(
@@ -298,7 +443,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               ),
             ),
             SizedBox(
-              width: (size.width - 2 * kDefautPadding) / 2,
+              width: (size.width - 3 * kDefautPadding) / 2,
               child: Text(
                 currencyFormatter.format(price),
                 style: GoogleFonts.openSans(

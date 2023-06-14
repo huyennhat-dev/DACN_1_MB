@@ -58,6 +58,11 @@ dependencies:
   webview_flutter: ^2.0.4
   another_flushbar: ^1.12.30
   scroll_to_index: ^3.0.1
+  lazy_load_scrollview: ^1.3.0
+  equatable:
+  pull_to_refresh: ^2.0.0
+  image_picker: ^0.7.5
+  image_cropper: ^1.5.1
   
   
 dev_dependencies:

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../util/behavior.dart';
-import '../../constants.dart';
 import '../component/header.dart';
 import 'order_body.dart';
 

@@ -7,10 +7,23 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../bloc/user_bloc.dart';
 
-class AppHeader extends StatelessWidget {
+class AppHeader extends StatefulWidget {
   const AppHeader({super.key, this.acctionLeft});
 
   final Widget? acctionLeft;
+
+  @override
+  State<AppHeader> createState() => _AppHeaderState();
+}
+
+class _AppHeaderState extends State<AppHeader> {
+  final TextEditingController inputController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    inputController.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +43,7 @@ class AppHeader extends StatelessWidget {
           _actionLeft(context),
           _searchForm(context, size),
           BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            return state.id != ''
+            return state.user.sId != null
                 ? GestureDetector(
                     onTap: () => Scaffold.of(context).openEndDrawer(),
                     child: Stack(
@@ -55,9 +68,7 @@ class AppHeader extends StatelessWidget {
                                                   color: kPrimaryColor,
                                                   spreadRadius: 1,
                                                   blurRadius: 5,
-                                                  offset: Offset(0,
-                                                      0) // changes position of shadow
-                                                  ),
+                                                  offset: Offset(0, 0)),
                                             ]),
                                         child: Center(
                                           child: Text(
@@ -105,13 +116,17 @@ class AppHeader extends StatelessWidget {
               borderRadius: BorderRadius.circular(5)),
           child: TextFormField(
             cursorColor: textColor,
+            controller: inputController,
             style: GoogleFonts.openSans(
                 color: textColor, fontSize: 16, fontWeight: FontWeight.w400),
             maxLines: 1,
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
               suffixIcon: GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, '/search'),
+                  onTap: () {
+                    Navigator.pushNamed(context, '/search',
+                        arguments: {"value": inputController.text});
+                  },
                   child: const Icon(CupertinoIcons.search,
                       color: textColor, size: 20)),
               border: InputBorder.none,
@@ -124,6 +139,10 @@ class AppHeader extends StatelessWidget {
                   const EdgeInsets.symmetric(vertical: 11, horizontal: 0),
             ),
             onChanged: (value) {},
+            onFieldSubmitted: (value) {
+              Navigator.pushNamed(context, '/search',
+                  arguments: {"value": value});
+            },
           ),
         ),
       );
@@ -131,8 +150,8 @@ class AppHeader extends StatelessWidget {
   Widget _actionLeft(BuildContext context) => SizedBox(
       width: 50,
       height: 50,
-      child: acctionLeft != null
-          ? acctionLeft!
+      child: widget.acctionLeft != null
+          ? widget.acctionLeft!
           : _iconButton(
               Icons.arrow_back_ios, 26, () => Navigator.pop(context)));
 }

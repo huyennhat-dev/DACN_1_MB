@@ -62,6 +62,7 @@ class ProductItem extends StatelessWidget {
           height: 35,
           icon: Icons.shopping_bag_outlined,
           text: "Thêm vào giỏ",
+          textSize: 14,
         ),
       );
 

@@ -1,4 +1,5 @@
 import 'package:app_client/src/util/behavior.dart';
+import 'package:app_client/src/views/app/bloc/user_bloc.dart';
 import 'package:app_client/src/views/app/order/order_tab_bloc.dart';
 import 'package:app_client/src/views/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+// import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../model/order.dart';
 
@@ -17,11 +20,14 @@ class OrderBody extends StatefulWidget {
 }
 
 class _OrderBodyState extends State<OrderBody> {
-  OrderTabBloc orderTabBloc = OrderTabBloc();
   final currencyFormatter = NumberFormat.currency(locale: 'vi');
   final formattedTime = DateFormat('HH:mm d-M-yyyy');
+  RefreshController refreshController = RefreshController();
+
   @override
   void initState() {
+    final orderTabBloc = BlocProvider.of<OrderTabBloc>(context);
+
     orderTabBloc.add(LoadOrderTabEvent());
     super.initState();
   }
@@ -29,41 +35,49 @@ class _OrderBodyState extends State<OrderBody> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return BlocProvider(
-      create: (context) => orderTabBloc,
-      child: Container(
-        width: size.width - kDefautPadding,
-        padding: const EdgeInsets.symmetric(vertical: kDefautPadding / 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(kDefautPadding / 2),
-          color: Colors.white,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: kDefautPadding / 2),
-              child: Text(
-                'Danh sách đơn hàng',
-                style: GoogleFonts.openSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: textColor,
-                ),
-              ),
-            ),
-            _buildTabHeader(context, size),
-            _buildTabBody(context, size)
-          ],
-        ),
+
+    return Container(
+      width: size.width - kDefautPadding,
+      padding: const EdgeInsets.symmetric(vertical: kDefautPadding / 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(kDefautPadding / 2),
+        color: Colors.white,
+      ),
+      child: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          return state.user.sId != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: kDefautPadding / 2),
+                      child: Text(
+                        'Danh sách đơn hàng',
+                        style: GoogleFonts.openSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: textColor,
+                        ),
+                      ),
+                    ),
+                    _buildTabHeader(context, size),
+                    _buildTabBody(context, size)
+                  ],
+                )
+              : Container(
+                  height: size.height - 2 * 55 - 3 * kDefautPadding,
+                );
+        },
       ),
     );
   }
 
   Widget _buildTabBody(BuildContext context, Size size) {
+    final orderTabBloc = BlocProvider.of<OrderTabBloc>(context);
+
     return SizedBox(
       height: size.height - 55 - kDefautPadding - 160,
       child: ScrollConfiguration(
@@ -71,9 +85,8 @@ class _OrderBodyState extends State<OrderBody> {
           child: BlocBuilder<OrderTabBloc, OrderTabtState>(
             builder: (context, state) {
               return PageView.builder(
-                controller: PageController(
-                  initialPage: state.selectTabIndex ?? 0,
-                ),
+                controller:
+                    PageController(initialPage: state.selectTabIndex ?? 0),
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 onPageChanged: (int page) =>
@@ -242,6 +255,8 @@ class _OrderBodyState extends State<OrderBody> {
   }
 
   Widget _buildTabHeader(BuildContext context, Size size) {
+    final orderTabBloc = BlocProvider.of<OrderTabBloc>(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: kDefautPadding / 2),
       child: Container(

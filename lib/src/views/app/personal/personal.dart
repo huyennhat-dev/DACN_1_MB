@@ -1,6 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:app_client/src/model/user.dart';
+import 'package:app_client/src/repo/auth.dart';
 import 'package:app_client/src/views/app/bloc/cart_bloc.dart';
+import 'package:app_client/src/views/app/order/order_tab_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,14 +29,24 @@ class _PersonalPageState extends State<PersonalPage> {
 
   Future<void> login(BuildContext context) async {
     final userBloc = BlocProvider.of<UserBloc>(context);
+    final orderTabBloc = BlocProvider.of<OrderTabBloc>(context);
 
     _loadingBloc.changeLoading(true);
     bool rs = await AuthController().loginWithGoogle();
     if (rs) {
-      final UserState? user = await AuthController().logged();
+      final User? user = await AuthController().logged();
       if (user != null) {
-        userBloc
-            .add(LoginEvent(id: user.id, name: user.name, photo: user.photo));
+        final rs = await AuthRepo.getInfo();
+        orderTabBloc.add(LoadOrderTabEvent());
+
+        userBloc.add(LoginEvent(
+            user: User(
+                sId: user.sId,
+                name: rs.data['user']['name'],
+                photo: rs.data['user']['photo'],
+                email: rs.data['user']['email'],
+                address: rs.data['user']['address'],
+                phone: rs.data['user']['phone'])));
       } else {
         userBloc.add(LogoutEvent());
       }
@@ -80,8 +93,8 @@ class _PersonalPageState extends State<PersonalPage> {
         alignment: Alignment.center,
         children: [
           BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-            return state.id != ''
-                ? _buildLogged(size, state)
+            return state.user.sId != null
+                ? _buildLogged(context, size, state)
                 : _notLoggedIn(textStyle, context, size);
           }),
           StreamBuilder<bool>(
@@ -102,7 +115,8 @@ class _PersonalPageState extends State<PersonalPage> {
     );
   }
 
-  Widget _buildLogged(Size size, UserState state) => Container(
+  Widget _buildLogged(BuildContext context, Size size, UserState state) =>
+      Container(
         width: size.width - kDefautPadding,
         padding: const EdgeInsets.all(kDefautPadding / 2),
         decoration: BoxDecoration(
@@ -124,7 +138,7 @@ class _PersonalPageState extends State<PersonalPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(150),
                 child: CachedNetworkImage(
-                  imageUrl: state.photo,
+                  imageUrl: state.user.photo ?? "",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -134,7 +148,7 @@ class _PersonalPageState extends State<PersonalPage> {
               width: size.width - 2 * kDefautPadding,
               child: Center(
                 child: Text(
-                  state.name,
+                  state.user.name ?? "",
                   style: GoogleFonts.openSans(
                       fontSize: 24,
                       fontWeight: FontWeight.w500,
@@ -145,7 +159,11 @@ class _PersonalPageState extends State<PersonalPage> {
               ),
             ),
             const SizedBox(height: 20),
-            _buildLoggedButton(size, () {}, Icons.edit, "Chỉnh sửa tài khoản"),
+            _buildLoggedButton(
+                size,
+                () => Navigator.pushNamed(context, '/edit-profile'),
+                Icons.edit,
+                "Chỉnh sửa tài khoản"),
             const SizedBox(height: 20),
             _buildLoggedButton(
               size,

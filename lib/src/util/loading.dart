@@ -5,22 +5,20 @@ import 'package:flutter/material.dart';
 
 import '../views/constants.dart';
 
-class LoadingWidget extends StatefulWidget {
-  const LoadingWidget({super.key});
+class LoadingWidget extends StatelessWidget {
+  const LoadingWidget({super.key, this.width, this.height});
 
-  @override
-  State<LoadingWidget> createState() => _LoadingWidgetState();
-}
+  final double? width;
+  final double? height;
 
-class _LoadingWidgetState extends State<LoadingWidget> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: Container(
-          width: size.width,
-          height: size.height,
+          width: width ?? size.width,
+          height: height ?? size.height,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2),

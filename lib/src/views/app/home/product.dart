@@ -72,7 +72,7 @@ class _ProductDetailState extends State<ProductDetail> {
                   SliverAppBar(
                     pinned: true,
                     backgroundColor: Colors.white,
-                    flexibleSpace: const AppHeader(),
+                    flexibleSpace: AppHeader(),
                     automaticallyImplyLeading: false,
                     actions: [Container()],
                   ),

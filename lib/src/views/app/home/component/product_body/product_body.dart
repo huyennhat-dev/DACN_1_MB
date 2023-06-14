@@ -181,7 +181,7 @@ class _ProductDetailBodyState extends State<ProductDetailBody> {
                                 children: [
                                   TextSpan(
                                     text:
-                                        "${currencyFormatter.format(widget.product.price! * widget.product.sale!)}  (giảm ${widget.product.sale! * 100}%)",
+                                        "${currencyFormatter.format(widget.product.price! * widget.product.sale!)}  (giảm ${(widget.product.sale! * 100).toStringAsFixed(0)}%)",
                                     style: GoogleFonts.openSans(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -309,6 +309,7 @@ class _ProductDetailBodyState extends State<ProductDetailBody> {
                             text: "Thêm vào giỏ hàng",
                             width: (size.width - 2 * kDefautPadding) / 2,
                             height: 40,
+                            textSize: 14,
                           ),
                         ),
                         const SizedBox(height: 10),

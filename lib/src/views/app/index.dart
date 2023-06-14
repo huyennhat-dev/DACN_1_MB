@@ -23,7 +23,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   final List<Widget> _pages = [
     const HomePage(),
     const OrderPage(),
-    const NotificationPage(),
+    // const NotificationPage(),
     const PersonalPage()
   ];
 
@@ -95,11 +95,11 @@ class _HomeLayoutState extends State<HomeLayout> {
                   icon: Icon(CupertinoIcons.archivebox),
                   label: 'Đơn hàng',
                 ),
-                NavigationDestination(
-                  selectedIcon: Icon(CupertinoIcons.bell_fill),
-                  icon: Icon(CupertinoIcons.bell),
-                  label: 'Thông báo',
-                ),
+                // NavigationDestination(
+                //   selectedIcon: Icon(CupertinoIcons.bell_fill),
+                //   icon: Icon(CupertinoIcons.bell),
+                //   label: 'Thông báo',
+                // ),
                 NavigationDestination(
                   selectedIcon: Icon(CupertinoIcons.person_fill),
                   icon: Icon(CupertinoIcons.person),

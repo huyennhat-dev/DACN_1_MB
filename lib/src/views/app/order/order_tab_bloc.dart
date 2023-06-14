@@ -25,7 +25,6 @@ class OrderTabtState {
   OrderTabtState copyWith({
     List<Order>? orders,
     List<OrderStatus>? orderStatus,
-    double? totalPrice,
     int? selectTabIndex,
   }) {
     return OrderTabtState(
