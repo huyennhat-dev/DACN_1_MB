@@ -2,7 +2,6 @@
 
 import 'package:app_client/src/model/user.dart';
 import 'package:app_client/src/repo/auth.dart';
-import 'package:app_client/src/views/app/bloc/cart_bloc.dart';
 import 'package:app_client/src/views/app/order/order_tab_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -47,10 +46,10 @@ class _PersonalPageState extends State<PersonalPage> {
                 email: rs.data['user']['email'],
                 address: rs.data['user']['address'],
                 phone: rs.data['user']['phone'])));
+        FlushBar().showFlushBar(context, "success", "Đăng nhập thành công!");
       } else {
         userBloc.add(LogoutEvent());
       }
-      FlushBar().showFlushBar(context, "success", "Đăng nhập thành công!");
     } else {
       FlushBar().showFlushBar(
           context, "warning", "Đăng nhập thất bại! Có lỗi xảy ra.");
